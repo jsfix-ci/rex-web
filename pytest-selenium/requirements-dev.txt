@@ -8,7 +8,7 @@ chardet==4.0.0
 chromedriver-binary==96.0.4664.18.0
 cryptography==35.0.0
 Faker==9.7.1
-identify==2.2.15
+identify==2.3.3
 idna==2.10 # pyup: ignore
 importlib-metadata==4.8.1
 more-itertools==8.10.0
