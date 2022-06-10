@@ -2,6 +2,7 @@ import { createSelector } from 'reselect';
 import * as authSelectors from '../../auth/selectors';
 import * as selectFeatureFlags from '../../featureFlags/selectors';
 import * as navigationSelectors from '../../navigation/selectors';
+import { getFiltersFromQuery } from '../../navigation/utils';
 import { studyGuidesFeatureFlag } from '../constants';
 import { getHighlightColorFiltersWithContent, getHighlightLocationFilterForPage } from '../highlights/utils';
 import {
@@ -18,7 +19,6 @@ import {
 import * as parentSelectors from '../selectors';
 import { archiveTreeSectionIsChapter } from '../utils/archiveTreeUtils';
 import { colorfilterLabels } from './constants';
-import { getFiltersFromQuery } from './utils';
 
 export const localState = createSelector(
   parentSelectors.localState,

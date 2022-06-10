@@ -5,9 +5,10 @@ import { Reducer } from 'redux';
 import { getType } from 'typesafe-actions';
 import { receiveLoggedOut } from '../../auth/actions';
 import { locationChange } from '../../navigation/actions';
+import { getFiltersFromQuery } from '../../navigation/utils';
 import { AnyAction } from '../../types';
 import { merge } from '../../utils';
-import { highlightStyles, modalQueryParameterName } from '../constants';
+import { modalQueryParameterName } from '../constants';
 import * as actions from './actions';
 import { modalUrlName } from './constants';
 import { HighlightData, State } from './types';
@@ -19,9 +20,7 @@ import {
   updateSummaryHighlightsDependOnFilters
 } from './utils';
 import { findHighlight } from './utils/reducerUtils';
-import updateSummaryFilters from './utils/updateSummaryFilters';
 
-const defaultColors = highlightStyles.map(({label}) => label);
 export const initialState: State = {
   currentPage: {
     hasUnsavedHighlight: false,
@@ -29,7 +28,7 @@ export const initialState: State = {
     pageId: null,
   },
   summary: {
-    filters: {colors: defaultColors, locationIds: []},
+    filters: {colors: [], locationIds: []},
     highlights: null,
     loading: false,
     open: false,
@@ -41,11 +40,8 @@ export const initialState: State = {
 const reducer: Reducer<State, AnyAction> = (state = initialState, action) => {
   switch (action.type) {
     case getType(locationChange): {
-      // Noops for locationChange dispatched when search query changes
-      if (action.payload.action === 'REPLACE') { return state; }
-
-      const summaryShouldBeOpen = action.payload.query[modalQueryParameterName] === modalUrlName
-        && action.payload.action === 'PUSH';
+      const hasModalQuery = action.payload.query[modalQueryParameterName] === modalUrlName;
+      const {colors, locationIds} = getFiltersFromQuery(action.payload.query);
 
       const currentPageId = state.currentPage.pageId;
       const actionPageId = action.payload.location.state && action.payload.location.state.pageUid;
@@ -55,7 +51,12 @@ const reducer: Reducer<State, AnyAction> = (state = initialState, action) => {
           : initialState.currentPage,
         summary: {
           ...state.summary,
-          open: summaryShouldBeOpen,
+          filters: {
+            ...state.summary.filters,
+            ...(colors.length && {colors}),
+            ...(locationIds.length && {locationIds}),
+          },
+          open: hasModalQuery,
         },
       };
     }
@@ -245,38 +246,7 @@ const reducer: Reducer<State, AnyAction> = (state = initialState, action) => {
         },
       };
     }
-    case getType(actions.setSummaryFilters): {
-      return {
-        ...state,
-        summary: {
-          ...state.summary,
-          filters: {
-            ...state.summary.filters,
-            ...action.payload,
-          },
-          highlights: {},
-          loading: true,
-          pagination: null,
-        },
-      };
-    }
-    case getType(actions.updateSummaryFilters): {
-      return {
-        ...state,
-        summary: {
-          ...state.summary,
-          filters: updateSummaryFilters(state.summary.filters, action.payload),
-          highlights: {},
-          loading: true,
-          pagination: null,
-        },
-      };
-    }
     case getType(actions.receiveSummaryHighlights): {
-      // Check if filters wasn't updated while we were loading response.
-      // It may happen if user with slow network connection change filters very fast.
-      if (action.meta.filters && state.summary.filters !== action.meta.filters) { return state; }
-
       return {
         ...state,
         summary: {

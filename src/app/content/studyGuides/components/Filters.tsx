@@ -6,6 +6,7 @@ import { connect, useSelector } from 'react-redux';
 import styled from 'styled-components/macro';
 import { loggedOut } from '../../../auth/selectors';
 import { useServices } from '../../../context/Services';
+import { updateQueryFromFilterChange } from '../../../navigation/utils';
 import { AppState, Dispatch } from '../../../types';
 import ChapterFilter from '../../components/popUp/ChapterFilter';
 import ColorFilter from '../../components/popUp/ColorFilter';
@@ -18,7 +19,6 @@ import { LinkedArchiveTreeNode } from '../../types';
 import { printStudyGuides } from '../actions';
 import { highlightStyles } from '../constants';
 import * as selectors from '../selectors';
-import { updateQueryFromFilterChange } from '../utils';
 import { cookieUTG } from './UsingThisGuide/constants';
 import UsingThisGuideBanner from './UsingThisGuide/UsingThisGuideBanner';
 import UsingThisGuideButton from './UsingThisGuide/UsingThisGuideButton';
@@ -113,6 +113,7 @@ export default () => {
   const services = useServices();
   const { dispatch } = services;
   const state = services.getState();
+  const summaryFilters = selectors.summaryFilters(state);
 
   const toggleUsingThisGuide = () => {
     setUTGopen((toggleState) => !toggleState);
@@ -129,7 +130,7 @@ export default () => {
           disabled={userLoggedOut}
           multiselect={true}
           setFilters={(change: FiltersChange<LinkedArchiveTreeNode>) =>
-            updateQueryFromFilterChange(dispatch, state, { locations: change })}
+            updateQueryFromFilterChange(dispatch, state, summaryFilters, { locations: change })}
         />
       </FilterDropdown>
       <FilterDropdown
@@ -142,7 +143,7 @@ export default () => {
           styles={highlightStyles}
           labelKey={(label: HighlightColorEnum) => `i18n:studyguides:popup:filters:${label}`}
           updateSummaryFilters={(change: FiltersChange<HighlightColorEnum>) =>
-            updateQueryFromFilterChange(dispatch, state, { colors: change })}
+            updateQueryFromFilterChange(dispatch, state, summaryFilters, { colors: change })}
         />
       </FilterDropdown>
       <RightButtonsWrapper>
@@ -160,7 +161,9 @@ export default () => {
       colorLabelKey={(color: HighlightColorEnum) => `i18n:studyguides:popup:filters:${color}`}
       chapterAriaLabelKey={() => 'i18n:studyguides:popup:filters:remove:chapter'}
       chapterDataAnalyticsLabel={(splitTitle: string) => `Remove breadcrumb for chapter ${splitTitle}`}
-      setFilters={(change: SummaryFiltersUpdate) => updateQueryFromFilterChange(dispatch, state, change)}
+      setFilters={
+        (change: SummaryFiltersUpdate) => updateQueryFromFilterChange(dispatch, state, summaryFilters, change)
+      }
     />}
   </Filters>;
 };

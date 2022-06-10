@@ -1,13 +1,13 @@
 import { Reducer } from 'redux';
 import { getType } from 'typesafe-actions';
 import { locationChange } from '../../navigation/actions';
+import { getFiltersFromQuery } from '../../navigation/utils';
 import { AnyAction } from '../../types';
 import { merge } from '../../utils';
 import { modalQueryParameterName } from '../constants';
 import * as actions from './actions';
 import { modalUrlName } from './constants';
 import { State } from './types';
-import { getFiltersFromQuery } from './utils';
 
 export const initialState: State = {
   summary: {

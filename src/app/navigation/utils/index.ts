@@ -1,3 +1,4 @@
+import { HighlightColorEnum } from '@openstax/highlights-client';
 import { flatten, unflatten } from 'flat';
 import { Action, Location } from 'history';
 import curry from 'lodash/fp/curry';
@@ -8,7 +9,13 @@ import pathToRegexp, { Key, parse } from 'path-to-regexp';
 import queryString, { OutputParams } from 'query-string';
 import querystring from 'querystring';
 import { Dispatch } from 'redux';
+import { colorFilterQueryParameterName, locationIdsFilterQueryParameterName } from '../../content/constants';
+import { SummaryFilters, SummaryFiltersUpdate } from '../../content/highlights/types';
+import updateSummaryFilters from '../../content/highlights/utils/updateSummaryFilters';
+import { colorfilterLabels } from '../../content/studyGuides/constants';
 import { pathTokenIsKey } from '../../navigation/guards';
+import * as navigation from '../../navigation/selectors';
+import { AppState } from '../../types';
 import { actionHook } from '../../utils';
 import * as actions from '../actions';
 import {
@@ -156,3 +163,34 @@ export const createNavigationOptions = (
 
 export const navigationOptionsToString = (options: ReturnType<typeof createNavigationOptions>) =>
   (options.search ? `?${options.search}` : '') + (options.hash ? options.hash : '');
+
+export const getFiltersFromQuery = (query: OutputParams) => {
+  const queryColors = query[colorFilterQueryParameterName] as HighlightColorEnum | HighlightColorEnum[] | undefined;
+  const queryLocationIds = query[locationIdsFilterQueryParameterName] as string | string[] | undefined;
+
+  const colors = (Array.isArray(queryColors) ? queryColors : [queryColors])
+    .filter((color) => color && colorfilterLabels.has(color)) as HighlightColorEnum[];
+
+  const locationIds = (Array.isArray(queryLocationIds) ? queryLocationIds : [queryLocationIds])
+    .filter((id) => id) as string[];
+
+  return { colors, locationIds };
+};
+
+export const updateQueryFromFilterChange = (
+    dispatch: Dispatch, state: AppState, filters: SummaryFilters, change: SummaryFiltersUpdate
+  ) => {
+  const updatedFilters: {[key: string]: any} = updateSummaryFilters(filters, change);
+  // convert empty filter arrys to null so they are preserved in query
+  for (const filter in updatedFilters) {
+    if (updatedFilters[filter] && !updatedFilters[filter].length) {
+      updatedFilters[filter] = null;
+    }
+  }
+  const match = navigation.match(state);
+  const existingQuery = navigation.query(state);
+  if (!match ) { return; }
+  dispatch(actions.replace(match, {
+    search: getQueryForParam(updatedFilters as any as Record<string, string[]>, existingQuery),
+  }));
+};
