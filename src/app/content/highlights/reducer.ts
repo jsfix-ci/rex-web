@@ -247,7 +247,6 @@ const reducer: Reducer<State, AnyAction> = (state = initialState, action) => {
       };
     }
     case getType(actions.receiveSummaryHighlights): {
-      console.log('receive summary hilites: ', action.payload);
       return {
         ...state,
         summary: {

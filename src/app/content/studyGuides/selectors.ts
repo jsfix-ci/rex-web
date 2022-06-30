@@ -124,7 +124,7 @@ export const loggedOutAndQueryMissingFirstChapter = createSelector(
     !logged && firstChapter && !queryFilters.locationIds?.includes(firstChapter.id)
 );
 
-const defaultFilters = createSelector(
+export const defaultFilters = createSelector(
   loggedIn,
   defaultLocationFilter,
   highlightColorFiltersWithContent,
