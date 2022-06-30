@@ -16,7 +16,6 @@ import * as select from '../selectors';
 import { formatReceivedHighlights, loadUntilPageSize } from '../utils/highlightLoadingUtils';
 
 export const loadMore = async(services: MiddlewareAPI & AppServices, pageSize?: number) => {
-  console.log('load more');
   const state = services.getState();
 
   const locationFilters = select.highlightLocationFilters(state);
@@ -25,7 +24,6 @@ export const loadMore = async(services: MiddlewareAPI & AppServices, pageSize?: 
   const sourcesFetched = Object.keys(select.loadedCountsPerSource(state));
   const colors = select.summaryColorFilters(state);
   const filteredCounts = select.filteredCountsPerPage(state);
-  console.log('colors: ',  colors);
 
   const { highlights, pagination } = await loadUntilPageSize({
     book,

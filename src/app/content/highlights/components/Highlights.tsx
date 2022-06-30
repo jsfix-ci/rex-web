@@ -26,7 +26,6 @@ export const NoHighlightsTip = htmlMessage(
 // tslint:disable-next-line: variable-name
 const Highlights = ({ className }: { className: string }) => {
   const orderedHighlights = useSelector(selectors.orderedSummaryHighlights);
-  console.log('summary hilites (from state): ', useSelector(selectors.summaryHighlights));
   const isLoading = useSelector(selectors.summaryIsLoading);
   const totalCountsPerPage = useSelector(selectors.totalCountsPerPage);
   const container = React.useRef<HTMLElement>(null);
