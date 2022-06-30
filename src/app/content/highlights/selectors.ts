@@ -1,5 +1,8 @@
 import { createSelector } from 'reselect';
+// import * as navigationSelectors from '../../navigation/selectors';
+// import { getFiltersFromQuery } from '../../navigation/utils';
 import * as parentSelectors from '../selectors';
+import { colorfilterLabels } from '../studyGuides/constants';
 import {
   getHighlightColorFiltersWithContent,
   getHighlightLocationFilters,
@@ -108,9 +111,27 @@ export const loadedCountsPerSource = createSelector(
   getLoadedCountsPerSource
 );
 
-export const summaryFilters = createSelector(
+const defaultFilters = createSelector(
+  highlightColorFiltersWithContent,
+  (colorFilters) => ({
+    colors: Array.from(colorFilters.size ? colorFilters : colorfilterLabels),
+    locationIds: [],
+  })
+);
+
+const selectedFilters = createSelector(
   localState,
   (state) => state.summary.filters
+);
+
+export const summaryFilters = createSelector(
+  selectedFilters,
+  defaultFilters,
+  (selected, defaults) => ({
+    ...defaults,
+    ...(selected.colors.length && {colors: selected.colors}),
+    ...(selected.locationIds.length && {locationIds: selected.locationIds}),
+  })
 );
 
 const rawSummaryLocationFilters = createSelector(

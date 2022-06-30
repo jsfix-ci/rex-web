@@ -22,6 +22,7 @@ export const hookBody: ActionHookBody<typeof initializeMyHighlightsSummary> = (s
   // this can only be undefined in dev if you press the MH button before book is loaded, whatever
   const book = assertDefined(selectContent.book(state), 'book should be defined');
   const locationFilters = highlightLocationFilters(state);
+  console.log('location filters: ', locationFilters);;
 
   let totalCounts: HighlightsSummary;
 
