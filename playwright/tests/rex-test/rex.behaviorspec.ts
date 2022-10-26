@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { ContentPage, KsModal, rexUserSignup, rexUserSignout, sleep } from './helpers'
+import { ContentPage, KsModal, rexUserSignup, rexUserSignout, MHModal, sleep } from './helpers'
 
 test('S487 C651124 open keyboard shortcut modal using keyboard', async ({ browserName, page }) => {
   // GIVEN: Open Rex page
@@ -79,6 +79,20 @@ test('signup and highlight', async ({ page, isMobile }) => {
   const highlight_id = await BookPage.highlight_id()
   const highlightColor = await BookPage.contentHighlightColor(highlight_id)
   expect(highlightColor).toBe('green')
+
+
+  // AND: Open MH modal
+  await BookPage.openMHmodal()
+
+  const Modal = new MHModal(page)
+  await expect(Modal.MHModal).toBeVisible()
+
+  // WHEN: Close the MH modal using X icon
+  await Modal.closeMHModal()
+
+  // THEN: The MH modal is closed
+  await expect(Modal.MHModal).toBeHidden()
+
 
   // WHEN: Log out the user
   await rexUserSignout(page)

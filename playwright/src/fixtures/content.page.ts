@@ -7,6 +7,7 @@ class ContentPage {
   pink: Locator
   purple: Locator
   yellow: Locator
+  myhighlights: Locator
   page: Page
   paragraph: Locator
   para: Locator
@@ -20,6 +21,7 @@ class ContentPage {
     this.purple = this.page.locator('[aria-label="Apply purple highlight"]')
     this.yellow = this.page.locator('[aria-label="Apply yellow highlight"]')
     this.highlight = this.page.locator('.highlight')
+    this.myhighlights = this.page.locator('[aria-label="Highlights"]')
   }
 
   // Open a Rex page with base url
@@ -89,6 +91,11 @@ class ContentPage {
         }
       }
     }
+  }
+
+  // Open My Highlights modal
+  async openMHmodal() {
+    await this.myhighlights.click()
   }
 
   // Select paragraph
