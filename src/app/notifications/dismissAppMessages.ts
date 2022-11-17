@@ -9,11 +9,10 @@ export const dismissAppMessage = (message: Message) => {
   const daysToExpire = message.end_at
     ? Math.max(1, differenceInDays(new Date(), new Date(message.end_at)))
     : 60
-  ;
 
   Cookies.set(getMessageKey(message), 'true', { expires: daysToExpire });
 };
 
 export const isAppMessageDismissed = (message: Message) => {
-  return !!Cookies.get(getMessageKey(message));
+  return !!JSON.parse(Cookies.get(getMessageKey(message)));
 };

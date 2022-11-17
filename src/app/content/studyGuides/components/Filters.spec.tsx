@@ -362,7 +362,7 @@ describe('Filters', () => {
 
       const banner = component.root.findByType(UsingThisGuideBanner);
       expect(banner.props.show).toEqual(true);
-      expect(Cookies.get(cookieUTG)).toBe('true');
+      expect(JSON.parse(Cookies.get(cookieUTG))).toBe('true');
       expect(spyTrack).not.toHaveBeenCalled();
     });
 
@@ -377,7 +377,7 @@ describe('Filters', () => {
 
       const banner = component.root.findByType(UsingThisGuideBanner);
       expect(banner.props.show).toEqual(false);
-      expect(Cookies.get(cookieUTG)).toEqual('true');
+      expect(JSON.parse(Cookies.get(cookieUTG))).toEqual('true');
       expect(spyTrack).not.toHaveBeenCalled();
 
       const toggleButton = component.root.findByType(UsingThisGuideButton);

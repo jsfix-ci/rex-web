@@ -7,7 +7,7 @@ export const doAcceptCookies = () => {
 };
 
 export const isAcceptCookiesNeeded = () => {
-  return Cookies.get(acknowledgedKey) !== 'true';
+  return JSON.parse(Cookies.get(acknowledgedKey)) !== 'true';
 };
 
 export const clearAcceptCookies = () => {
