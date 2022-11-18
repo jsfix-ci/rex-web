@@ -80,7 +80,7 @@ const HighlightsHelpInfo = () => {
   React.useEffect(() => {
     setTimeout(() => {
       if (
-        Boolean(Cookies.get(cookieId))
+        Boolean(JSON.parse(Cookies.get(cookieId)))
         || !assertWindow().matchMedia(theme.breakpoints.mobileQuery).matches
       ) { return; }
       setShow(true);

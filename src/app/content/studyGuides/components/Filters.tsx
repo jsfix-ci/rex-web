@@ -103,13 +103,12 @@ const ConnectedPrintButton = connect(
     return shouldFetchMore
       ? {...props, onClick: loadHighlightsAndPrint}
       : props
-    ;
   }
 )(PrintButton);
 
 export default () => {
   const userLoggedOut = useSelector(loggedOut);
-  const [isUTGopen, setUTGopen] = React.useState(!Cookies.get(cookieUTG));
+  const [isUTGopen, setUTGopen] = React.useState(!JSON.parse(Cookies.get(cookieUTG)));
   const services = useServices();
   const { dispatch } = services;
   const state = services.getState();

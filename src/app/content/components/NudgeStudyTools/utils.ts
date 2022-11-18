@@ -121,11 +121,11 @@ export const usePositions = (isMobile: boolean) => {
 };
 
 export const getCounterCookie = () => {
-  return Number(Cookies.get(cookieNudge.counter) || 0);
+  return Number(JSON.parse(Cookies.get(cookieNudge.counter)) || 0);
 };
 
 export const getDateCookie = () => {
-  const lastShownDate = Cookies.get(cookieNudge.date);
+  const lastShownDate = JSON.parse(Cookies.get(cookieNudge.date));
   return lastShownDate ? new Date(lastShownDate) : undefined;
 };
 
@@ -134,11 +134,10 @@ export const passedTimeInterval = () => {
   return !lastShownDate
     ? true
     : (Date.now() - lastShownDate.getTime()) > timeIntervalBetweenShowingNudgeInMs
-  ;
 };
 
 export const getPageCounterCookie = () => {
-  return Number(Cookies.get(cookieNudge.pageCounter) || 0);
+  return Number(JSON.parse(Cookies.get(cookieNudge.pageCounter)) || 0);
 };
 
 export const incrementPageCounterCookie = () => {

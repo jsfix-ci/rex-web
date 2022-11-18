@@ -99,7 +99,7 @@ const UsingThisGuideBanner = (props: Props) => {
 
   React.useEffect(() => {
     // Send GA event except when banner is open by default (cookie is set to 'true').
-    const isCookieSet = Cookies.get(cookieUTG) === 'true';
+    const isCookieSet = JSON.parse(Cookies.get(cookieUTG)) === 'true';
     if (props.show && isCookieSet) {
       trackOpenUTG();
     } else if (props.show) {
